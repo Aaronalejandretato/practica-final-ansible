@@ -101,22 +101,22 @@ Verificación de usuarios:
 ansible -i parte1/inventory servidores -m shell -a "getent passwd carlos && echo 'carlos existe' || echo 'carlos NO existe'"
 ansible -i parte1/inventory servidores -m shell -a "getent passwd marta && echo 'marta existe' || echo 'marta NO existe'"
 ```
-![alt text](image-3.png)
+![alt text](img/image-3.png)
 
 Estado del servicio Apache:
 ```bash
 ansible -i parte1/inventory servidores -m shell -a "systemctl is-active httpd"
 ```
-![alt text](image.png)
+![alt text](img/image.png)
 
 Contenido web:
 ```bash
 ansible -i parte1/inventory servidores -m shell -a "cat /var/www/vhosts/centos9s/index.html"
 ```
-![alt text](image-2.png)
+![alt text](img/image-2.png)
 
 Confirmar que servicio funcione:
 ```bash
  curl http://vagrant1
 ```
-![alt text](image-1.png)
+![alt text](img/image-1.png)
