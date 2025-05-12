@@ -1,0 +1,17 @@
+---
+- name: Remove users carlos and marta
+  hosts: servidores
+  become: true
+  tasks:
+    - name: Remove user carlos
+      ansible.builtin.user:
+        name: carlos
+        state: absent
+        remove: true
+
+    - name: Remove user marta
+      ansible.builtin.user:
+        name: marta
+        state: absent
+        remove: true
+

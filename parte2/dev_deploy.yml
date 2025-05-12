@@ -1,0 +1,51 @@
+---
+- name: Deploy web server on hosts in the server group
+  hosts: servidores
+  become: true
+
+  handlers:
+    - name: Restart httpd
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+
+  tasks:
+    - name: Install httpd package
+      ansible.builtin.yum:
+        name: httpd
+        state: present
+
+    - name: Enable and start httpd service
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Deploy the vhost template
+      ansible.builtin.template:
+        src: templates/vhost.conf.j2
+        dest: /etc/httpd/conf.d/vhost.conf
+        mode: '0644'
+      notify: Restart httpd
+
+    - name: Create /var/www/vhosts/{{ ansible_hostname }}
+      ansible.builtin.file:
+        path: "/var/www/vhosts/{{ ansible_hostname }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy index.html
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: "/var/www/vhosts/{{ ansible_hostname }}/index.html"
+        mode: '0644'
+
+    - name: Allow http and https service in firewall
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        permanent: true
+        immediate: true
+        state: enabled
+      loop:
+        - http
+        - https

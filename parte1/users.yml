@@ -1,0 +1,22 @@
+---
+- name: Create users carlos and marta
+  hosts: servidores
+  become: true
+  vars:
+    packages:
+      - memcached
+      - mariadb-server
+  tasks:
+    - name: Create user carlos
+      ansible.builtin.user:
+        name: carlos
+
+    - name: Create user marta
+      ansible.builtin.user:
+        name: marta
+
+    - name: Install redis if the total swap space on the host is greater than 20 MB 
+      ansible.builtin.yum:
+        name: redis
+        state: present
+      when: ansible_facts['memory_mb']['swap']['total'] > 20

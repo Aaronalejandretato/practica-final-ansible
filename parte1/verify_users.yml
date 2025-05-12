@@ -1,0 +1,44 @@
+---
+- name: Verify that users carlos and marta have been created
+  hosts: servidores
+  become: true
+  gather_facts: false
+
+  tasks:
+
+    - name: Verify that user carlos exist
+      ansible.builtin.command: getent passwd carlos
+      register: carlos_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Show status of user carlos
+      ansible.builtin.debug:
+        msg: "Usuario carlos existe"
+      when: carlos_check.rc == 0
+
+    - name: Write carlos status in verify.txt
+      ansible.builtin.lineinfile:
+        path: /home/vagrant/verify.txt
+        line: "Carlos was created"
+        create: true
+      when: carlos_check.rc == 0
+
+    - name: Verify that user marta exist
+      ansible.builtin.command: getent passwd marta
+      register: marta_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Show status of user marta
+      ansible.builtin.debug:
+        msg: "Usuario marta existe"
+      when: marta_check.rc == 0
+
+    - name: Write martas status in verify.txt
+      ansible.builtin.lineinfile:
+        path: /home/vagrant/verify.txt
+        line: "Marta was created"
+        create: true
+      when: marta_check.rc == 0
+

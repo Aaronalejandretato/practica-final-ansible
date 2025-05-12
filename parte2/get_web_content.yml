@@ -1,0 +1,21 @@
+---
+- name: Test web content
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Retrieve web content and write to error log on failure
+      block:
+
+        - name: Retrieve web content
+          ansible.builtin.uri:
+            url: http://vagrant1
+          register: content
+
+      rescue:
+
+        - name: Write to error file
+          ansible.builtin.copy:
+            content: "{{ content }}"
+            dest: error.log
+
